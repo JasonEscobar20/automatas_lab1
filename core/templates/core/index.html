@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Laboratorio 1 </title>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    
+    <style>
+
+        .upload-container input{
+            /* border:1px solid #92b0b3; */
+            background:#f1f1f1;
+            outline:2px dashed #92b0b3;
+            outline-offset:-10px;
+            padding:100px 100px 100px 150px;
+            text-align:center !important;
+            width:200px;
+            margin-bottom: 20px;
+        }
+        .upload-container input:hover{
+            background:#ddd
+        }
+
+    
+    </style> 
+</head>
+    <div style="display: flex;">
+        <div class="upload-container" style="width: 50%;">
+            <form action="{% url 'core:read_result' %}" id="form_read_txt" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="filename" id="file_upload" />
+                <br>
+                <button class="upload-btn" style="margin-right: 50px;margin-left: 25px;"> Procesar </button>
+                <a href="/"> Limpiar datos </a>
+            </form>
+        </div>
+        <div>
+            <div class="col-span-6">
+                <h2 class="text-xl"> Informacion del txt </h2>
+                <ul class="list-disc list-inside mt-4">
+                    {% for item in txt_lines %}
+                    <li class="text-xl"> {{ item }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <br>
+    </div>
+    <hr>
+
+    <div style="display: flex;">
+        <h1 style="width: 40%;"> Quintupla </h1>
+        <h2 style="width: 50%;"> Matriz de transicion </h2>
+    </div>
+    <div style="display: flex;">
+        <div style="width: 10%;">
+            <table border="1" style="width: 100%;">
+                <tbody>
+                    <tr> 
+                        <th> Q </th>
+                    </tr>
+                    {% for item in data.quintupla %}
+                    <tr>
+                        <td> {{ item }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="width: 10%;">
+            <table border="1" style="width: 100%;">
+                <tbody>
+                    <tr> 
+                        <th> Σ </th>
+                    </tr>
+                    {% for item in data.alphabet %}
+                    <tr>
+                        <td> {{ item }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="width: 10%;">
+            <table border="1" style="width: 100%;">
+                <tbody>
+                    <tr>
+                        <th> A </th>
+                    </tr>
+                    {% for item in data.success_state  %}
+                    <tr>
+                        <td> {{ item }} </td>
+                    </tr>
+                      
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="width: 30%;margin-left: 100px;">
+            
+            <table border="1" style="width: 100%;">
+                <thead>
+                    <tr> 
+                        <th> Estado </th>
+                        {% for item in data.alphabet %}
+                        <th> {{ item }} </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for state in data.transition_array %}
+                    <tr>
+                        <td> 
+                            {{ state.0 }}
+                        </td>
+                        {% for x in state.1 %}
+                        <td> {{ x.1 }} </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+   
+
+    <script src="{% static 'js/read_txt.js' %}"></script>
+</body>
+</html>

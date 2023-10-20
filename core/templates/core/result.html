@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.3/dist/full.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+    <div class="">
+        <h2 class="text-3xl text-center font-bold mt-5"> Resultados del txt </h2>
+
+        <div class="grid grid-cols-12 gap-5 mt-10 p-10">
+            <div class="col-span-6">
+                <h2 class="text-xl"> Informacion del txt </h2>
+                <ul class="list-disc list-inside mt-4">
+                    {% for item in txt_lines %}
+                    <li class="text-xl"> {{ item }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-span-6">
+                <!-- <h2 class="text-2xl font-bold text-center"> Matriz de transicion </h2> -->
+                <div class="grid grid-cols-12">
+                    <div class="col-span-4">
+                        <table class="table table-zebra">
+                            <tbody>
+                                <tr> 
+                                    <th> Q </th>
+                                </tr>
+                                {% for item in data.quintupla %}
+                                <tr>
+                                    <td> {{ item }} </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-span-4">
+                        <table class="table table-zebra">
+                            <tbody>
+                                <tr> 
+                                    <th> Σ </th>
+                                </tr>
+                                {% for item in data.alphabet %}
+                                <tr>
+                                    <td> {{ item }} </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-span-4">
+                        <table class="table table-zebra">
+                            <tbody>
+                                <tr>
+                                    <th> A </th>
+                                </tr>
+                                <tr>
+                                    <td> {{ data.success_state.0 }} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-bold text-center mt-14"> Matriz de transicion </h2>
+                    <table class="table table-zebra">
+                        <thead>
+                            <tr> 
+                                <th> Estado </th>
+                                {% for item in data.alphabet %}
+                                <th> {{ item }} </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for state in data.transition_array %}
+                            <tr>
+                                {{ state.0 }}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
