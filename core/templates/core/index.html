@@ -111,13 +111,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for state in data.transition_array %}
+                    {% for state in transition_array %}
                     <tr>
                         <td> 
                             {{ state.0 }}
                         </td>
                         {% for x in state.1 %}
-                        <td> {{ x.1 }} </td>
+                        <td> {{ x }} </td>
                         {% endfor %}
                     </tr>
                     {% endfor %}

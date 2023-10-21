@@ -58,15 +58,17 @@
                                     <th> A </th>
                                 </tr>
                                 <tr>
-                                    <td> {{ data.success_state.0 }} </td>
+                                    {% for item in data.success_state %}
+                                    <td> {{ item }} </td>
+                                    {% endfor %}
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
+                {{ transition_array }}
                 <div>
-                    <h2 class="text-2xl font-bold text-center mt-14"> Matriz de transicion </h2>
+                    <h2 class="text-2xl font-bold text-center mt-14"> Matriz de transicion  ddddddddd</h2>
                     <table class="table table-zebra">
                         <thead>
                             <tr> 
@@ -77,10 +79,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for state in data.transition_array %}
-                            <tr>
-                                {{ state.0 }}
-                            </tr>
+                            {% for state in transition_array %}
+                            
                             {% endfor %}
                         </tbody>
                     </table>
