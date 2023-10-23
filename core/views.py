@@ -57,17 +57,18 @@ def get_transition_list(transition, quintupla, alphabet):
     return result
 
 def split_transition_func(data):
+    split_transition = data.split('),')
     transition_list = []
     
-    for item in data:
+    for item in split_transition:
         remove_parenthesis = item.replace('(', '').replace(')', '')
         transition_list.append(remove_parenthesis.split(','))
 
     return transition_list
 
 def get_epsilon_states(transition):
-    split_transition = transition.split('),')
-    transition_list = split_transition_func(split_transition)
+    # split_transition = transition.split('),')
+    transition_list = split_transition_func(transition)
     epsilon_states = []
     
     for item in transition_list:
@@ -80,49 +81,79 @@ def get_epsilon_states(transition):
     
     return epsilon_states
 
-def move_function(item, states_no_checked, compositions, data):
+def move_function(item, states_no_checked, finally_states, compositions, data):
     alphabet = data['alphabet']
-    alphabet.remove('e')
+    
+    if 'e' in data['alphabet']:
+        alphabet.remove('e')
     
     state = item['state']
+    new_state = item.copy()
     composition = item['composition']
-    print(composition)
-    
+
+    state_letter = ord(state[0])
     transition_table = data['transition_line']
-    epsilon_states = get_epsilon_states(transition_table)
-    split_transition = transition_table.split('),')
-    transition_table = split_transition_func(split_transition)
-    
-    pruebitas = []
+
+    transition_table = split_transition_func(transition_table)
+    get_result_states = []
     
     for character in alphabet:
-        for x in composition:
-            for y in transition_table:
-                first_state = y[0]
-                letter = y [1]
-                result_state = y[2]
-                
-                if x == first_state and letter == character:
-                    pruebitas.append(result_state)
-                # print(first_state, letter, result_state)
-            
-            
-            
-            # if state == first_state and letter == character:
-            #     print(result_state)
-    
-    for x in epsilon_states:
-        if x not in pruebitas:
-            pruebitas.append(x)
-            
-    pruebitas.sort()
-    
-    if pruebitas not in compositions:
-        i = ord(state[0])
-        i+=1
-        print(chr(i), 'letra siguiente')
+        new_composition = []
         
-    states_no_checked.remove(item)
+        for item_1 in transition_table:
+            first_state = item_1[0]
+            letter = item_1[1]
+            result_state = item_1[2]
+            
+            for item_2 in composition:
+                if item_2 == first_state and letter == character:
+                    if result_state not in new_composition:
+                        new_composition.append(result_state)
+                         
+            
+     
+        for item_3 in transition_table:
+            first_state = item_3[0]
+            letter = item_3[1]
+            result_state = item_3[2]
+            
+            for item_4 in new_composition:
+                if item_4 == first_state and letter == 'e':
+                    if result_state not in new_composition:
+                        new_composition.append(result_state)
+            
+        new_composition.sort()
+        
+        if new_composition not in compositions:
+            state_letter += 1
+            for verify_state in states_no_checked:
+                
+                if verify_state['state'] == chr(state_letter):
+                    state_letter += 1
+                    
+            next_letter = chr(state_letter)
+            get_result_states.append([character, next_letter.upper()])
+            
+            states_no_checked.append({
+                'state': next_letter,
+                'composition': new_composition,
+            })
+            compositions.append(new_composition)
+        else:
+            get_state_letter = chr(state_letter).upper()
+            for verify_item_exist in finally_states:
+                if verify_item_exist['composition'] == new_composition:
+                    get_state_letter = verify_item_exist['state'].upper()
+                    
+            get_result_states.append([character, get_state_letter])
+    
+    new_state['letters'] = get_result_states
+    finally_states.append(new_state)
+
+    for index in range(len(states_no_checked)):
+        if states_no_checked[index]['state'] == state:
+            del states_no_checked[index]
+            break
         
 
 def transform_afn_to_afd(data):
@@ -133,35 +164,44 @@ def transform_afn_to_afd(data):
     first_composition = [initial_state, *epsilon_states]
     compositions = [first_composition]
     states_no_checked = []
+    finally_states = []
     
     first_item = {
         'state': first_state,
-        'composition': first_composition
+        'composition': first_composition,
     }
     
     states_no_checked.append(first_item)
     
     while len(states_no_checked) != 0:
-        for x in states_no_checked:
-            state = x['state']
-            move_function(x, states_no_checked, compositions, data)
-            
-        # states_no_checked.pop()
-        
+        for item in states_no_checked:
+            move_function(item, states_no_checked, finally_states, compositions, data)
+            break
+
+    afd_quintupla = [item['state'] for item in finally_states]
+    afd_alphabet = data['alphabet']
+    afd_initial_state = finally_states[0]['state']
+    afd_success_states = []
     
-    nuevos_estados = []
-    
-    print(epsilon_states)
+    for success_state in data['success_state']:
+        for item in finally_states:
+            if success_state in item['composition']:
+                afd_success_states.append(item['state'])
+                          
+
+    return finally_states
 
 def result_view(request):
     get_file = request.FILES['filename']
     get_data = read_txt(get_file)
     
-    transform_afn_to_afd(get_data)
+    get_afd = transform_afn_to_afd(get_data)
+    
     
     return render(request, 'core/index.html', {
         'txt_lines': get_data['txt_lines'],
         'data': get_data,
+        'afd_data': get_afd,
         'transition_array': get_data['transition_array']
     })
  

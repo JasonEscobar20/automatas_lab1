@@ -99,7 +99,8 @@
                 </tbody>
             </table>
         </div>
-        <div style="width: 30%;margin-left: 100px;">
+
+        <div style="width: 30%;margin-left: 50px;">
             
             <table border="1" style="width: 100%;">
                 <thead>
@@ -119,6 +120,31 @@
                         {% for x in state.1 %}
                         <td> {{ x }} </td>
                         {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="width: 30%;margin-left: 50px;">
+            <table border="1" style="width: 100%;">
+                <thead>
+                    <tr> 
+                        <th> Estado </th>
+                        {% for item in data.alphabet %}
+                        <th> {{ item }} </th>
+                        {% endfor %}
+                        <th> Composicion </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in afd_data %}
+                    <tr> 
+                        <td> {{ item.state|upper }} </td>
+                        {% for letter in item.letters %}
+                        <td> {{ letter.1 }} </td>
+                        {% endfor %}
+                        <td> {{ item.composition }} </td>
                     </tr>
                     {% endfor %}
                 </tbody>
